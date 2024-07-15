@@ -13,7 +13,7 @@ from dataclasses import dataclass
 import sys
 import os
 
-@dataclass 
+@dataclass
 class ModelTrainerConfig:
     trained_model_file_path = os.path.join('artifacts','model.pkl')
 
