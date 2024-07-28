@@ -3,7 +3,7 @@
 This project aims to predict the price of diamonds based on various features using machine learning models. The best performing regression model is selected for the prediction.
 
 ## Directory Structure
-[web page]([web page url](http://diamond-price-prediction-env.eba-c3mqskt5.eu-north-1.elasticbeanstalk.com/))
+([web page url of the project](http://diamond-price-prediction-env.eba-c3mqskt5.eu-north-1.elasticbeanstalk.com/))
 
 ## Project Components
 
