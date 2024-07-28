@@ -3,7 +3,7 @@
 This project aims to predict the price of diamonds based on various features using machine learning models. The best performing regression model is selected for the prediction.
 
 ## Directory Structure
-[web page]([Email Text](mailto:email@example.com))
+[web page]([web page url](http://diamond-price-prediction-env.eba-c3mqskt5.eu-north-1.elasticbeanstalk.com/))
 
 ## Project Components
 
@@ -34,4 +34,11 @@ cd diamond-price-prediction
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
+python application.py
+```
+### 2.Deployment on AWS Elastic Beanstalk
+```bash
+eb init -p python-3.8 diamond-price-prediction --region <your-region>
+eb create diamond-price-prediction-env
+eb deploy
+eb open
