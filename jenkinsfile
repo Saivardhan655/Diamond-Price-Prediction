@@ -1,0 +1,73 @@
+pipeline {
+    agent {
+        node {
+            label 'docker-agent-python3'
+        }
+    }
+    environment {
+        // AWS Credentials and Region
+        AWS_ACCESS_KEY_ID = credentials('aws-access-key-id') // Replace with your Jenkins credentials ID
+        AWS_SECRET_ACCESS_KEY = credentials('aws-secret-access-key') // Replace with your Jenkins credentials ID
+        AWS_REGION = 'your-aws-region' // e.g., 'us-west-2'
+        S3_BUCKET = 'your-s3-bucket-name'
+        EB_ENV_NAME = 'your-eb-environment-name'
+        EB_APP_NAME = 'your-eb-application-name'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo "Building..."
+                sh '''
+                echo "Doing build stuff..."
+                # Add any build-related commands here, e.g., installing dependencies
+                pip install -r requirements.txt
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                echo "Testing..."
+                sh '''
+                echo "Doing test stuff..."
+                # Add your testing commands here
+                pytest
+                '''
+            }
+        }
+        stage('Package') {
+            steps {
+                echo "Packaging..."
+                sh '''
+                echo "Creating application package..."
+                # Create a ZIP package of your application
+                zip -r application.zip . -x *.git* *.idea* *.venv* *tests* .ebextensions/*
+                '''
+            }
+        }
+        stage('Upload to S3') {
+            steps {
+                echo "Uploading to S3..."
+                sh '''
+                echo "Uploading application package to S3..."
+                aws s3 cp application.zip s3://$S3_BUCKET/
+                '''
+            }
+        }
+        stage('Deploy to Elastic Beanstalk') {
+            steps {
+                echo "Deploying to Elastic Beanstalk..."
+                sh '''
+                echo "Deploying application to Elastic Beanstalk..."
+                aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME --version-label v1 --source-bundle S3Bucket=$S3_BUCKET,S3Key=application.zip
+                aws elasticbeanstalk update-environment --environment-name $EB_ENV_NAME --version-label v1
+                '''
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up workspace...'
+            cleanWs()
+        }
+    }
+}
